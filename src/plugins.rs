@@ -2,6 +2,8 @@ pub mod mermaid;
 pub mod plugin;
 pub mod prism;
 
+use crate::plugins::plugin::CssImport;
+
 use std::collections::HashMap;
 
 pub fn new<'r>(plugins: Vec<Box<dyn plugin::Plugin<'r>>>) -> plugin::PluginManager<'r> {
@@ -13,9 +15,18 @@ pub fn new<'r>(plugins: Vec<Box<dyn plugin::Plugin<'r>>>) -> plugin::PluginManag
     );
 
     let base_css_imports = vec![
-        "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css",
-        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css",
-        "/static/custom.css",
+        CssImport {
+            url: "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css",
+            ..Default::default()
+        },
+        CssImport {
+            url: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css",
+            ..Default::default()
+        },
+        CssImport {
+            url: "/static/custom.css",
+            ..Default::default()
+        },
     ];
 
     let base_js_imports = vec![

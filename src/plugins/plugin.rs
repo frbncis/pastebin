@@ -1,22 +1,30 @@
 use std::collections::HashMap;
 
+use serde::{Serialize};
+
 pub trait Plugin<'r>: Sync + Send {
-    fn css_imports(&self) -> &Vec<&'r str>;
+    fn css_imports(&self) -> &Vec<CssImport>;
     fn js_imports(&self) -> &Vec<&'r str>;
     fn js_init(&self) -> Option<&'r str>;
     fn static_resources(&self) -> &HashMap<&'r str, &'r [u8]>;
 }
 
+#[derive(Clone, Copy, Debug, Default, Serialize)]
+pub struct CssImport {
+    pub url: &'static str,
+    pub media_query: &'static str,
+}
+
 #[derive(Debug)]
 pub struct PastebinPlugin<'r> {
-    pub css_imports: Vec<&'r str>,
+    pub css_imports: Vec<CssImport>,
     pub js_imports: Vec<&'r str>,
     pub js_init: Option<&'r str>,
     pub static_resources: HashMap<&'r str, &'r [u8]>,
 }
 
 impl<'r> Plugin<'r> for PastebinPlugin<'r> {
-    fn css_imports(&self) -> &Vec<&'r str> {
+    fn css_imports(&self) -> &Vec<CssImport> {
         &self.css_imports
     }
 
@@ -43,7 +51,7 @@ impl<'r> PluginManagerBuilder<'r> {
         self
     }
 
-    pub fn css_imports(&mut self, css_imports: Vec<&'r str>) -> &mut PluginManagerBuilder<'r> {
+    pub fn css_imports(&mut self, css_imports: Vec<CssImport>) -> &mut PluginManagerBuilder<'r> {
         self.manager.set_css_imports(css_imports);
         self
     }
@@ -77,7 +85,7 @@ pub struct PluginManager<'r> {
     //   * static_resources (files under static/ directory - compiled with the binary)
     plugins: Vec<Box<dyn Plugin<'r>>>,
 
-    css_imports: Vec<&'r str>,
+    css_imports: Vec<CssImport>,
     js_imports: Vec<&'r str>,
     js_init: Vec<&'r str>,
     static_resources: HashMap<&'r str, &'r [u8]>,
@@ -104,11 +112,11 @@ impl<'r> PluginManager<'r> {
         self.plugins = plugins;
     }
 
-    pub fn set_css_imports(&mut self, css_imports: Vec<&'r str>) {
+    pub fn set_css_imports(&mut self, css_imports: Vec<CssImport>) {
         self.css_imports = css_imports;
     }
 
-    pub fn css_imports(&self) -> Vec<&'r str> {
+    pub fn css_imports(&self) -> Vec<CssImport> {
         self.css_imports.clone()
     }
 
@@ -140,7 +148,7 @@ impl<'r> PluginManager<'r> {
         self.set_css_imports(
             self.plugins
                 .iter()
-                .flat_map(|p| p.css_imports().into_iter())
+                .flat_map(|p| p.css_imports())
                 .chain((&self.css_imports).into_iter())
                 .map(|&val| val)
                 .collect(),

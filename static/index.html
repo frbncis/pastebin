@@ -10,12 +10,9 @@
 
         <link rel="icon" href="/static/favicon.ico">
 
-        {{#each css_imports as |url|}}
-        <link href="{{format_url ../uri_prefix url}}" rel="stylesheet" />
+        {{#each css_imports as |css_import|}}
+        <link href="{{format_url ../uri_prefix css_import.url}}" {{#if css_import.media_query }} media="{{css_import.media_query}}" {{/if}} rel="stylesheet" />
         {{/each}}
-
-        <link href="/static/prism.css" rel="stylesheet" media="(prefers-color-scheme: light)"/>
-        <link href="/static/prism-dark.css" rel="stylesheet" media="(prefers-color-scheme: dark)" />
     </head>
 
     <body>
