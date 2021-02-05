@@ -13,6 +13,9 @@
         {{#each css_imports as |url|}}
         <link href="{{format_url ../uri_prefix url}}" rel="stylesheet" />
         {{/each}}
+
+        <link href="/static/prism.css" rel="stylesheet" media="(prefers-color-scheme: light)"/>
+        <link href="/static/prism-dark.css" rel="stylesheet" media="(prefers-color-scheme: dark)" />
     </head>
 
     <body>
@@ -224,7 +227,7 @@
                         {{/if}}
                     {{/if}}
                     {{#if is_editable}}
-                        <a id="send-btn" class="form-control btn btn-outline-success mt-2 mt-md-0 mb-md-0 ml-md-2 ml-sm-2" href="#">Send</a>
+                        <a id="send-btn" class="form-control btn btn-outline-success mt-2 mt-md-0 mb-md-0 ml-md-2 ml-sm-2" href="#">Create</a>
                     {{/if}}
                 </div>
             </div>
